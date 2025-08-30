@@ -17,6 +17,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::prefix('categories')->controller(CategoryController::class)->group(function(){
     Route::get('/',  'index')->name('categories.index');
+    Route::get('/{id}/show',  'show')->name('categories.show');
+    Route::post('/',  'store')->name('categories.store');
+    Route::delete('/{id}',  'destroy')->name('categories.destroy');
+    Route::patch('/{id}',  'update')->name('categories.update');
 });
 
 Route::prefix('users')->controller(UserController::class)->group(function(){

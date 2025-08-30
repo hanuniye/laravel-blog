@@ -55,4 +55,35 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    // public function permissions()
+    // {
+    //     return $this->belongsToMany(Permission::class)->withPivot('is_allowed');
+    // }
+
+    // public function hasRole($role)
+    // {
+    //     return $this->roles->contains('name', $role);
+    // }
+
+    // public function hasPermission($permission)
+    // {
+    //     $direct = $this->permissions()->where('name', $permission)->first();
+
+    //     if ($direct) {
+    //         return $direct->pivot->is_allowed == 1;
+    //     }
+
+    //     foreach ($this->roles as $role) {
+    //         if ($role->permissions->contains('name', $permission)) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 }

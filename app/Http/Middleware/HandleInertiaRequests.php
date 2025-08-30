@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -43,14 +44,41 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
-            'auth' => [
-                'user' => $request->user(),
-            ],
-            'ziggy' => fn (): array => [
+            'auth' => function () {
+                if (!Auth::check()) {
+                    return ['user' => null];
+                }
+
+                $user = Auth::user();
+
+                // Roles
+                $roles = $user->roles()->pluck('name')->values();
+
+                // Permissions (via roles, NOT directly user->permissions)
+                $permissions = $user->roles()
+                    ->with('permissions:id,name') // eager load permissions
+                    ->get()
+                    ->pluck('permissions')        // collection of collections
+                    ->flatten()
+                    ->pluck('name')
+                    ->unique()
+                    ->values();
+
+                return [
+                    'user' => [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'roles' => $roles,        // ['admin', 'editor']
+                        'permissions' => $permissions,  // ['create-post', 'edit-post']
+                    ],
+                ];
+            },
+            'ziggy' => fn(): array => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'sidebarOpen' => !$request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }
 }

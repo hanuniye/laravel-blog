@@ -2,10 +2,11 @@ import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { Auth, User, type NavItem } from '@/types';
+import { NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, Folder, FolderPlus, PenSquare } from 'lucide-react';
 import AppLogo from './app-logo';
+import { hasPermission, hasRole } from '@/lib/auth';
 
 const adminNavItems: NavItem[] = [
     {
@@ -47,10 +48,7 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
-    const { auth } = usePage<{ auth: Auth }>().props;
-    const user = auth.user as User | null;
-
-    const mainNavItems: NavItem[] = user?.role === 'admin' ? adminNavItems : userNavItems;
+    const mainNavItems: NavItem[] = hasRole('admin') ? adminNavItems : userNavItems;
 
     return (
         <Sidebar collapsible="icon" variant="inset">
