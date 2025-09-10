@@ -24,6 +24,16 @@ const adminNavItems: NavItem[] = [
         href: '/users',
         icon: FolderPlus,
     },
+    {
+        title: 'Roles',
+        href: '/roles',
+        icon: FolderPlus,
+    },
+    {
+        title: 'Permissions',
+        href: '/permissions',
+        icon: FolderPlus,
+    },
 ];
 
 const userNavItems: NavItem[] = [

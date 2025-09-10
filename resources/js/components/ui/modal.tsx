@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 interface ModalProps {
     children: React.ReactNode;
     title: string;
-    description: string;
+    description?: string;
     isOpen: boolean;
     onClose: () => void;
 }

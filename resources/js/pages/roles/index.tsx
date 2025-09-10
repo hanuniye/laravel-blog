@@ -1,4 +1,3 @@
-import CategoryModal from '@/components/modals/category-modal';
 import PageSize from '@/components/page-size';
 import PaginationComp from '@/components/pagination';
 import Search from '@/components/search';
@@ -6,14 +5,15 @@ import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
-import { useState } from 'react';
-import { CategoryColumn, columns } from './columns';
+import { Head, router, usePage } from '@inertiajs/react';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
+import { RoleColumn, columns } from './components/columns';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Categories',
-        href: '/dashboard',
+        title: 'Roles',
+        href: '/categories',
     },
 ];
 
@@ -25,7 +25,7 @@ interface Links {
 }
 
 interface PaginatedData {
-    data: CategoryColumn[];
+    data: RoleColumn[];
     current_page: number;
     last_page: number;
     per_page: number;
@@ -33,8 +33,8 @@ interface PaginatedData {
     links: Links[];
 }
 
-interface CategoriesPageProps {
-    categories: PaginatedData;
+interface RolePageProps {
+    roles: PaginatedData;
 }
 
 interface PageProps {
@@ -45,29 +45,28 @@ interface PageProps {
     [key: string]: unknown;
 }
 
-export default function Index({ categories }: CategoriesPageProps) {
-    const [isOpen, setIsOpen] = useState(false);
-    console.log("hi")
+export default function Index({ roles }: RolePageProps) {
+    const {
+        flash: { success },
+    } = usePage<PageProps>().props;
 
-    const current = categories?.current_page;
-    const last = categories?.last_page;
-    const perPage = categories?.per_page ?? 10;
+    const current = roles?.current_page;
+    const last = roles?.last_page;
+    const perPage = roles?.per_page ?? 10;
 
-    const onOpen = () => {
-        setIsOpen(true);
-    };
-
-    const onClose = () => {
-        setIsOpen(false);
-    };
+    useEffect(() => {
+        if (success) {
+            toast.success(success);
+        }
+    }, [success]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-xl font-semibold">Category</h1>
-                    <Button onClick={onOpen}>Add category</Button>
+                    <h1 className="text-xl font-semibold">Roles</h1>
+                    <Button onClick={() => router.visit(route('roles.create'))}>Add Role</Button>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -75,15 +74,13 @@ export default function Index({ categories }: CategoriesPageProps) {
                     {/* <Filters status={filters.status} year={filters.year} /> */}
                 </div>
 
-                <DataTable columns={columns} data={categories?.data} />
+                <DataTable columns={columns} data={roles?.data} />
 
                 {/* Page size */}
                 <PageSize perPage={perPage} />
 
                 <PaginationComp current={current} last={last} perPage={perPage} />
             </div>
-
-            <CategoryModal isOpen={isOpen} onClose={onClose} />
         </AppLayout>
     );
 }

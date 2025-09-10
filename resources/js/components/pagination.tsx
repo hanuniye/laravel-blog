@@ -1,7 +1,7 @@
+import { Button } from '@/components/ui/button';
+import { Pagination, PaginationContent } from '@/components/ui/pagination';
 import { useQueryParams } from '@/hooks/useQueryParams';
 import { Link } from '@inertiajs/react';
-import { Button } from './ui/button';
-import { Pagination, PaginationContent } from './ui/pagination';
 
 interface PaginationProps {
     current: number;
@@ -45,14 +45,6 @@ const PaginationComp: React.FC<PaginationProps> = ({ current, last, perPage }: P
                         Previous
                     </Link>
                 </Button>
-
-                {/* {Array.from({ length: last }, (_, i) => (
-                            <Button variant="ghost" size="sm" key={i + 1}>
-                                <Link href={makeHref(i + 1)} className={current === i + 1 ? 'font-bold' : ''}>
-                                    {i + 1}
-                                </Link>
-                            </Button>
-                        ))} */}
 
                 {pages.map((p, i) =>
                     p === '…' ? (

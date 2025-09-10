@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class CategoryController extends Controller
@@ -47,7 +48,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:cetegories,name']
+            'name' => 'required|string|max:255|unique:' . (new Category)->getTable() . ',name'
         ]);
 
         Category::create($validated);
@@ -61,7 +62,6 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         $category = Category::findOrFail($id);
-
     }
 
     /**
@@ -78,14 +78,14 @@ class CategoryController extends Controller
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:cetegories,name' . $id]
+            'name' => ['required', 'string', 'max:255', Rule::unique('categories', 'name')->ignore($id),]
         ]);
 
         $category = Category::findOrFail($id);
 
         $category->update($validated);
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+        return redirect()->route('categories.index');
     }
 
     /**
@@ -101,7 +101,5 @@ class CategoryController extends Controller
 
         $category->delete();
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
-
-
     }
 }

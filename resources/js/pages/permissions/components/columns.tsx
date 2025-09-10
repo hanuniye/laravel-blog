@@ -1,22 +1,17 @@
 import { ColumnDef } from '@tanstack/react-table';
 import CellAction from './cell-action';
 
-export interface CategoryColumn {
+export type PermissionsColumn = {
     id: number;
     name: string;
-    posts_count: number;
     created_at: string;
     updated_at: string;
 }
 
-export const columns: ColumnDef<CategoryColumn>[] = [
+export const columns: ColumnDef<PermissionsColumn>[] = [
     {
         accessorKey: 'name',
         header: 'Name',
-    },
-    {
-        accessorKey: 'posts_count',
-        header: 'Posts_count',
     },
     // {
     //     accessorKey: 'totalAmount',

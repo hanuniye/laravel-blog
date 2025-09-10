@@ -21,8 +21,6 @@ export function hasRole(role: string) {
     } = usePage<PageProps>().props;
     if (!user) return false;
 
-    console.log(user)
-    
     return user.roles?.includes(role);
 }
 

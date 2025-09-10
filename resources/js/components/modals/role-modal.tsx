@@ -2,43 +2,43 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Modal } from '@/components/ui/modal';
-import { CategoryColumn } from '@/pages/categories/columns';
+import { RoleColumn } from '@/pages/roles/components/columns';
 import { useForm } from '@inertiajs/react';
 import { toast } from 'sonner';
 
-type CategoryModalProps = {
-    category?: CategoryColumn;
+type RoleModalProps = {
+    role?: RoleColumn;
     isOpen: boolean;
     onClose: () => void;
 };
 
-export default function CategoryModal({ isOpen, onClose, category }: CategoryModalProps) {
+export default function CategoryModal({ isOpen, onClose, role }: RoleModalProps) {
     const { data, setData, post, processing, errors, reset, patch, resetAndClearErrors } = useForm({
-        name: category?.name || '',
+        name: role?.name || '',
     });
 
-    const title = category ? 'Edit category' : 'Create category';
-    const action = category ? 'Save changes' : 'Create';
+    const title = role ? 'Edit role' : 'Create role';
+    const action = role ? 'Save changes' : 'Create';
 
     function submit(e: React.FormEvent) {
         e.preventDefault();
-        if (category) {
-            patch(route('categories.update', category?.id), {
+        if (role) {
+            patch(route('roles.update', role?.id), {
                 onSuccess: () => {
                     reset();
                     onClose();
-                    toast.success('Category updated.');
+                    toast.success('Role updated.');
                 },
                 onError: () => {
                     toast.error('error occured');
                 },
             });
         } else {
-            post(route('categories.store'), {
+            post(route('roles.store'), {
                 onSuccess: () => {
                     reset();
                     onClose();
-                    toast.success('Category created.');
+                    toast.success('Role created.');
                 },
                 onError: () => {
                     toast.error('error occured');
