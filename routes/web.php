@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,6 +41,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{id}', 'destroy')->name('roles.destroy');
         Route::patch('/{id}', 'update')->name('roles.update');
     });
+
+
+    Route::prefix('roles-permissions')->controller(RolePermissionController::class)->group(function () {
+        Route::get('/', 'index')->name('roles.permissions.index');
+        Route::post('/update', 'update')->name('roles.permissions.update');
+    });
+
 
 
     Route::prefix('users')->controller(UserController::class)->group(function () {

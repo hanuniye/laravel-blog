@@ -34,6 +34,11 @@ const adminNavItems: NavItem[] = [
         href: '/permissions',
         icon: FolderPlus,
     },
+    {
+        title: 'PermissionsMatrix',
+        href: '/roles-permissions',
+        icon: FolderPlus,
+    },
 ];
 
 const userNavItems: NavItem[] = [
