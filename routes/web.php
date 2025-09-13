@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\UserController;
@@ -40,6 +41,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{id}/edit', 'edit')->name('roles.edit');
         Route::delete('/{id}', 'destroy')->name('roles.destroy');
         Route::patch('/{id}', 'update')->name('roles.update');
+    });
+
+    Route::prefix('posts')->controller(PostController::class)->group(function () {
+        Route::get('/', 'index')->name('posts.index');
+        Route::post('/', 'store')->name('posts.store');
+        Route::get('/create', 'create')->name('posts.create');
+        Route::get('/{id}/edit', 'edit')->name('posts.edit');
+        Route::delete('/{id}', 'destroy')->name('posts.destroy');
+        Route::patch('/{id}', 'update')->name('posts.update');
     });
 
 

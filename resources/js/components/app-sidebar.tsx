@@ -10,8 +10,8 @@ import { hasPermission, hasRole } from '@/lib/auth';
 
 const adminNavItems: NavItem[] = [
     {
-        title: 'Blogs',
-        href: '/blogs',
+        title: 'Posts',
+        href: '/posts',
         icon: PenSquare,
     },
     {
