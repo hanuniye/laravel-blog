@@ -50,23 +50,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{id}/edit', 'edit')->name('posts.edit');
         Route::delete('/{id}', 'destroy')->name('posts.destroy');
         Route::patch('/{id}', 'update')->name('posts.update');
-    });
 
+        Route::post('/{post}/like', 'toggleLike')->name('posts.like');
+    });
 
     Route::prefix('roles-permissions')->controller(RolePermissionController::class)->group(function () {
         Route::get('/', 'index')->name('roles.permissions.index');
         Route::post('/update', 'update')->name('roles.permissions.update');
     });
 
-
-
     Route::prefix('users')->controller(UserController::class)->group(function () {
         Route::get('/', 'index')->name('users.index');
     });
 });
 
-
-
-
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';

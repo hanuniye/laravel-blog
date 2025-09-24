@@ -26,8 +26,8 @@ const CellAction = ({ data }: CellActionPropss) => {
 
     const { processing, delete: destroy } = useForm({});
 
-    const deleteCategory = () => {
-        destroy(route('roles.destroy', data?.id), {
+    const deletePost = () => {
+        destroy(route('posts.destroy', data?.id), {
             onSuccess: () => {
                 setOpen(false);
             },
@@ -39,7 +39,7 @@ const CellAction = ({ data }: CellActionPropss) => {
 
     return (
         <>
-            <AlertModel isOpen={open} loading={processing} onClose={() => setOpen(false)} onConfirm={deleteCategory} />
+            <AlertModel isOpen={open} loading={processing} onClose={() => setOpen(false)} onConfirm={deletePost} />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="h-8 w-8 p-0">
@@ -50,7 +50,7 @@ const CellAction = ({ data }: CellActionPropss) => {
                 <DropdownMenuContent>
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() =>  router.visit(`roles/${data?.id}/edit`)} >
+                    <DropdownMenuItem onClick={() =>  router.visit(`posts/${data?.id}/edit`)} >
                         <Edit className="mr-2 h-4 w-4" />
                         Update
                     </DropdownMenuItem>

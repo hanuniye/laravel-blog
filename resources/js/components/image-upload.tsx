@@ -1,29 +1,41 @@
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { ImagePlus, X } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 interface UploadedImage {
     id: string;
-    file: File;
-    preview: string;
+    file?: File; // Optional, since DB images don’t have File
+    preview: string; // Can be URL from DB or local preview
+    isFromDb?: boolean; // Track if the image came from the DB
 }
 
 interface ImageUploadProps {
     onFilesChange?: (files: File[]) => void;
     multiple?: boolean;
+    initialImages?: string[]; // array of image URLs from DB
 }
 
-const ImageUpload = ({ onFilesChange, multiple = true }: ImageUploadProps) => {
+const ImageUpload = ({ onFilesChange, multiple = true, initialImages = [] }: ImageUploadProps) => {
     const [images, setImages] = useState<UploadedImage[]>([]);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Load initial images from DB
+    useEffect(() => {
+        if (initialImages.length > 0) {
+            const dbImages = initialImages.map((url, i) => ({
+                id: `x-${i}`, // use the url as unique id
+                preview: url, // direct URL to DB image
+                isFromDb: true, // mark as DB image
+            }));
+            setImages(dbImages);
+        }
+    }, []);
 
     // Notify parent when files change
     useEffect(() => {
-        const files = images.map((img) => img.file);
+        const files = images.filter((img) => img.file).map((img) => img.file as File);
         onFilesChange?.(files);
-    }, [images, onFilesChange]);
+    }, [images]);
 
     const addImages = (files: File[]) => {
         const newImages = files.map((file) => ({
@@ -32,13 +44,18 @@ const ImageUpload = ({ onFilesChange, multiple = true }: ImageUploadProps) => {
             preview: URL.createObjectURL(file),
         }));
 
+        let updated: UploadedImage[];
+
         if (multiple) {
-            setImages((prev) => [...prev, ...newImages]);
+            updated = [...images, ...newImages];
         } else {
             // Clear existing and add only the first new image
-            images.forEach((img) => URL.revokeObjectURL(img.preview));
-            setImages([newImages[0]]);
+            images.forEach((img) => !img.isFromDb && URL.revokeObjectURL(img.preview));
+            updated = [newImages[0]];
         }
+
+        setImages(updated);
+        onFilesChange?.(updated.filter((img) => img.file).map((img) => img.file as File));
     };
 
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,8 +75,8 @@ const ImageUpload = ({ onFilesChange, multiple = true }: ImageUploadProps) => {
         }
 
         // Reset input
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
+        if (event?.target) {
+            event.target.value = '';
         }
     };
 
@@ -80,9 +97,9 @@ const ImageUpload = ({ onFilesChange, multiple = true }: ImageUploadProps) => {
                 <div className="animate-fade-in">
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                         {images.map((image) => (
-                            <Card
+                            <div
                                 key={image.id}
-                                className="group border-upload-zone-border bg-upload-zone hover:bg-upload-zone-hover animate-scale-in relative overflow-hidden transition-all duration-300 hover:shadow-[var(--shadow-image)]"
+                                className="group border-upload-zone-border bg-upload-zone hover:bg-upload-zone-hover animate-scale-in relative overflow-hidden rounded-md transition-all duration-300 hover:shadow-[var(--shadow-image)]"
                             >
                                 <div className="relative aspect-square">
                                     <img
@@ -102,7 +119,7 @@ const ImageUpload = ({ onFilesChange, multiple = true }: ImageUploadProps) => {
                                         </Button>
                                     </div>
                                 </div>
-                            </Card>
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -110,13 +127,15 @@ const ImageUpload = ({ onFilesChange, multiple = true }: ImageUploadProps) => {
 
             {/* Upload Button */}
             <div>
-                <Button type="button" onClick={() => fileInputRef.current?.click()} variant="secondary">
-                    {/* <Upload className="mr-2 h-5 w-5" /> */}
-                    <ImagePlus className="mr-2 h-4 w-4" />
-                    Upload {multiple ? 'Images' : 'Image'}
-                </Button>
-
-                <input ref={fileInputRef} type="file" accept="image/*" multiple={multiple} onChange={handleFileSelect} className="hidden" />
+                <label>
+                    <input type="file" accept="image/*" multiple={multiple} onChange={handleFileSelect} className="hidden" />
+                    <Button type="button" variant="secondary" asChild>
+                        <span className="flex items-center">
+                            <ImagePlus className="mr-2 h-4 w-4" />
+                            Upload {multiple ? 'Images' : 'Image'}
+                        </span>
+                    </Button>
+                </label>
             </div>
         </div>
     );

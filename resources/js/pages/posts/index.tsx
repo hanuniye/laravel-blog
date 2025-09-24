@@ -46,20 +46,21 @@ interface PageProps {
 }
 
 export default function Index({ posts }: PostPageProps) {
-    console.log(posts.data)
-    const {
-        flash: { success },
-    } = usePage<PageProps>().props;
+    const { flash } = usePage<PageProps>().props;
 
     const current = posts?.current_page;
     const last = posts?.last_page;
     const perPage = posts?.per_page ?? 10;
 
     useEffect(() => {
-        if (success) {
-            toast.success(success);
+        if (flash.success) {
+            toast.success(flash?.success);
         }
-    }, [success]);
+        return () => {
+            // 👇 clear flash when leaving this page
+            flash.success = '';
+        };
+    }, [flash?.success]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

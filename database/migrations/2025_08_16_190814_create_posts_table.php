@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->foreignIdFor(Category::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->string('image_path')->nullable();
-            $table->boolean('published')->default(false);
+            $table->string('published')->default('0');
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });

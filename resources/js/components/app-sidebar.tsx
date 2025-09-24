@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, FolderPlus, PenSquare } from 'lucide-react';
+import { BookOpen, Folder, FolderPlus, Home, PenSquare } from 'lucide-react';
 import AppLogo from './app-logo';
 import { hasPermission, hasRole } from '@/lib/auth';
 
@@ -51,9 +51,9 @@ const userNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
+        title: 'Home',
+        href: '/',
+        icon: Home,
     },
     {
         title: 'Documentation',
