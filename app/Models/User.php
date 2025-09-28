@@ -71,19 +71,20 @@ class User extends Authenticatable
     //     return $this->roles->contains('name', $role);
     // }
 
-    // public function hasPermission($permission)
-    // {
-    //     $direct = $this->permissions()->where('name', $permission)->first();
+    public function hasPermission($permission)
+    {
+        //this is for direct user permission
+        // $direct = $this->permissions()->where('name', $permission)->first();
 
-    //     if ($direct) {
-    //         return $direct->pivot->is_allowed == 1;
-    //     }
+        // if ($direct) {
+        //     return $direct->pivot->is_allowed == 1;
+        // }
 
-    //     foreach ($this->roles as $role) {
-    //         if ($role->permissions->contains('name', $permission)) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
+        foreach ($this->roles as $role) {
+            if ($role->permissions->contains('name', $permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

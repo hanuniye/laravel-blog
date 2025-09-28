@@ -1,12 +1,33 @@
+import { BlogCard } from '@/components/block-card';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { mockPosts } from '@/data/mockup';
 import { type SharedData } from '@/types';
+import { BlogPost } from '@/types/index';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Search } from 'lucide-react';
+import { Clock, Heart, Search, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 
-export default function Welcome() {
+export default function Blog({posts}:{ posts: any}) {
+    console.log(posts)
     const { auth } = usePage<SharedData>().props;
     const [searchQuery, setSearchQuery] = useState('');
+
+    const handleLike = (postId: string) => {
+        // setPosts((prev) =>
+        //     prev.map((post) =>
+        //         post.id === postId
+        //             ? {
+        //                   ...post,
+        //                   isLiked: !post.isLiked,
+        //                   likes: post.isLiked ? post.likes - 1 : post.likes + 1,
+        //               }
+        //             : post,
+        //     ),
+        // );
+
+        // const post = posts.find((p) => p.id === postId);
+    };
 
     return (
         <>
@@ -15,7 +36,7 @@ export default function Welcome() {
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
             </Head>
             <div className="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
-                <header className="mb-6 w-full px-2 text-sm not-has-[nav]:hidden lg:max-w-6xl lg:px-4">
+                <header className="mb-6 px-2 w-full text-sm not-has-[nav]:hidden lg:max-w-6xl lg:px-4">
                     <nav className="flex items-center justify-end gap-4">
                         {auth.user ? (
                             <Link
@@ -55,6 +76,19 @@ export default function Welcome() {
                             />
                         </div>
                     </div>
+
+                    {/* Posts Grid */}
+                    {posts?.length > 0 ? (
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            {posts?.map((post:any) => (
+                                <BlogCard key={post?.id} post={post} onLike={handleLike} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="py-12 text-center">
+                            <p className="text-lg text-muted-foreground">No posts found matching your search.</p>
+                        </div>
+                    )}
                 </div>
                 <div className="hidden h-14.5 lg:block"></div>
             </div>

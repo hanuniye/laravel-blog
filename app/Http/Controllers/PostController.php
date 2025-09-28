@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Post;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
@@ -57,7 +60,7 @@ class PostController extends Controller
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120', // 5MB
-            'tags' => 'nullable|array'
+            'tags' => 'nullable|array',
         ]);
 
         $readTime = ceil(str_word_count(strip_tags($data['content'])) / 200);
@@ -76,11 +79,11 @@ class PostController extends Controller
             'user_id' => auth()->id(),
             'image_path' => $path,
             'published' => false,
-            'tags'           => $data['tags'] ?? [],
-            'likes'          => 0,
+            'tags' => $data['tags'] ?? [],
+            'likes' => 0,
             'comments_count' => 0,
-            'read_time'      => $readTime,
-            'liked_users'    => [],
+            'read_time' => $readTime,
+            'liked_users' => [],
         ]);
 
         return redirect()->route('posts.index')->with('success', 'Post created!');
@@ -111,6 +114,9 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $post = Post::findOrFail($id);
+
+        $this->authorize('update', $post);
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'published' => 'nullable|string',
@@ -118,7 +124,6 @@ class PostController extends Controller
             'category_id' => 'required|string|exists:categories,id',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120', // 5MB
         ]);
-        $post = Post::findOrFail($id);
 
         // Handle new uploaded image
         if ($request->hasFile('image')) {
@@ -150,6 +155,7 @@ class PostController extends Controller
     public function destroy(string $id)
     {
         $post = Post::findOrFail($id);
+        $this->authorize('delete', $post);
 
         if ($post->image_path) {
             Storage::disk('public')->delete($post->image_path);
@@ -163,7 +169,7 @@ class PostController extends Controller
     // Toggle like/unlike
     public function toggleLike(Post $post)
     {
-        if(!Auth::check()){
+        if (! Auth::check()) {
             abort(401, 'Unauthenticated');
         }
 
@@ -186,9 +192,8 @@ class PostController extends Controller
         $post->save();
 
         return response()->json([
-            'likes'   => $post->likes,
+            'likes' => $post->likes,
             'isLiked' => $isLiked,
         ]);
     }
-
 }

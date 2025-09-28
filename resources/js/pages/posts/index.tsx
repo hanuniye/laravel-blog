@@ -1,3 +1,4 @@
+import { Can } from '@/components/can';
 import PageSize from '@/components/page-size';
 import PaginationComp from '@/components/pagination';
 import Search from '@/components/search';
@@ -68,7 +69,9 @@ export default function Index({ posts }: PostPageProps) {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex items-center justify-between">
                     <h1 className="text-xl font-semibold">Posts</h1>
-                    <Button onClick={() => router.visit(route('posts.create'))}>Add Post</Button>
+                    <Can permission="create-post">
+                        <Button onClick={() => router.visit(route('posts.create'))}>Add Post</Button>
+                    </Can>
                 </div>
 
                 <div className="flex items-center justify-between">

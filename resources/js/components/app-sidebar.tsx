@@ -2,11 +2,11 @@ import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { usePermission } from '@/hooks/use-permission';
 import { NavItem } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, FolderPlus, Home, PenSquare } from 'lucide-react';
+import { Link } from '@inertiajs/react';
+import { BookOpen, FolderPlus, Home, PenSquare } from 'lucide-react';
 import AppLogo from './app-logo';
-import { hasPermission, hasRole } from '@/lib/auth';
 
 const adminNavItems: NavItem[] = [
     {
@@ -43,8 +43,16 @@ const adminNavItems: NavItem[] = [
 
 const userNavItems: NavItem[] = [
     {
-        title: 'Blogs',
-        href: '/blogs',
+        title: 'Posts',
+        href: '/posts',
+        icon: BookOpen,
+    },
+];
+
+const editorNavItems: NavItem[] = [
+    {
+        title: 'Posts',
+        href: '/posts',
         icon: BookOpen,
     },
 ];
@@ -63,7 +71,9 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
-    const mainNavItems: NavItem[] = hasRole('admin') ? adminNavItems : userNavItems;
+    const { hasRole } = usePermission();
+    
+    const mainNavItems: NavItem[] = hasRole('admin') ? adminNavItems : hasRole('editor') ? editorNavItems : userNavItems;
 
     return (
         <Sidebar collapsible="icon" variant="inset">

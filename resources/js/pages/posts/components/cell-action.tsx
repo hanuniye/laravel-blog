@@ -1,6 +1,7 @@
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useState } from 'react';
 
+import { Can } from '@/components/can';
 import AlertModel from '@/components/modals/alert-modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,12 +15,10 @@ import {
 import { router, useForm } from '@inertiajs/react';
 import { toast } from 'sonner';
 import { PostColumn } from './columns';
-import RoleModal from '@/components/modals/role-modal';
 
 interface CellActionPropss {
     data: PostColumn;
 }
-
 
 const CellAction = ({ data }: CellActionPropss) => {
     const [open, setOpen] = useState(false);
@@ -47,18 +46,23 @@ const CellAction = ({ data }: CellActionPropss) => {
                         <MoreHorizontal className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() =>  router.visit(`posts/${data?.id}/edit`)} >
-                        <Edit className="mr-2 h-4 w-4" />
-                        Update
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setOpen(true)}>
-                        <Trash className="mr-2 h-4 w-4" />
-                        Delete
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
+
+                <Can permission="update-post">
+                    <DropdownMenuContent>
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => router.visit(`posts/${data?.id}/edit`)}>
+                            <Edit className="mr-2 h-4 w-4" />
+                            Update
+                        </DropdownMenuItem>
+                        <Can permission="delete-post">
+                            <DropdownMenuItem onClick={() => setOpen(true)}>
+                                <Trash className="mr-2 h-4 w-4" />
+                                Delete
+                            </DropdownMenuItem>
+                        </Can>
+                    </DropdownMenuContent>
+                </Can>
             </DropdownMenu>
         </>
     );
