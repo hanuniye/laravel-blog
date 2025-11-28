@@ -2,12 +2,24 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { BreadcrumbItem, PageProps } from '@/types';
+import { Head, useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
-type PermissionsMatrixProps = {
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'PermissionsMatrix',
+        href: '/roles-permissions',
+    },
+];
+
+type RolePermissionMatrix = {
+    roleId: number;
+    permissions: number[];
+};
+
+interface PermissionsMatrixProps extends PageProps {
     roles: {
         id: number;
         name: string;
@@ -19,29 +31,9 @@ type PermissionsMatrixProps = {
         id: number;
         name: string;
     }[];
-};
-
-type RolePermissionMatrix = {
-    roleId: number;
-    permissions: number[];
-};
-
-interface PageProps {
-    flash: {
-        success?: string;
-        error?: string;
-    };
-    [key: string]: unknown;
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'PermissionsMatrix',
-        href: '/roles-permissions',
-    },
-];
-
-export default function PermissionsMatrix({ roles, permissions }: PermissionsMatrixProps) {
+export default function PermissionsMatrix({ roles, permissions, flash: { success } }: PermissionsMatrixProps) {
     const { data, setData, post, processing } = useForm<{
         matrix: RolePermissionMatrix[];
     }>({
@@ -50,10 +42,6 @@ export default function PermissionsMatrix({ roles, permissions }: PermissionsMat
             permissions: role.permissions.map((p) => p.id), // existing permissions for that role
         })),
     });
-
-    const {
-        flash: { success },
-    } = usePage<PageProps>().props;
 
     useEffect(() => {
         if (success) {
@@ -79,8 +67,8 @@ export default function PermissionsMatrix({ roles, permissions }: PermissionsMat
         e.preventDefault();
         post(route('roles.permissions.update'), {
             onError: () => {
-                toast.error("error occured")
-            }
+                toast.error('error occured');
+            },
         });
     };
 
@@ -112,7 +100,7 @@ export default function PermissionsMatrix({ roles, permissions }: PermissionsMat
                                             return (
                                                 <TableCell key={role.id} className="text-center">
                                                     <Checkbox
-                                                    className='border-gray-400'
+                                                        className="border-gray-400"
                                                         checked={roleData?.permissions.includes(p.id) ?? false}
                                                         onCheckedChange={(checked) => togglePermission(role.id, p.id, checked)}
                                                     />

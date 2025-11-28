@@ -20,14 +20,6 @@ interface CellActionPropss {
     data: CategoryColumn;
 }
 
-interface PageProps {
-    flash: {
-        success?: string;
-        error?: string;
-    };
-    [key: string]: unknown;
-}
-
 const CellAction = ({ data }: CellActionPropss) => {
     const [open, setOpen] = useState(false);
     const [isUpdOpen, setIsUpdOpen] = useState(false);

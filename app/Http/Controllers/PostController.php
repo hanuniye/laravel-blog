@@ -12,7 +12,7 @@ use Inertia\Inertia;
 
 class PostController extends Controller
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests; // if we want to use ($this->authorize(action, model)) in methods we have to //AuthorizesRequests//
 
     /**
      * Display a listing of the resource.
@@ -20,18 +20,19 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $query = Post::query();
+        $perPage = (int) $request->input('per_page', 10);
 
         // 🔍 Search by name
         if ($search = $request->input('search')) {
             $query->where('title', 'like', "%{$search}%");
         }
 
-        $perPage = (int) $request->input('per_page', 10);
-
         // 📄 Paginate with per_page (default 10)
-        $posts = $query->with(['category:id,name', 'user:id,name'])->latest()->paginate(
-            $perPage
-        )->appends($request->all()); // Notice .appends($request->all()) → this is the key to keeping search + filters during pagination.
+        $posts = $query
+            ->with(['category:id,name', 'user:id,name'])
+            ->latest()
+            ->paginate($perPage)
+            ->appends($request->all()); // Notice .appends($request->all()) → this function is to keeping filters during pagination.
 
         return Inertia::render('posts/index', [
             'posts' => $posts,
@@ -43,6 +44,7 @@ class PostController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Post::class);
         $categories = Category::all()->select('name', 'id');
 
         return Inertia::render('posts/create', [
@@ -55,6 +57,7 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Post::class);
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -102,6 +105,7 @@ class PostController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('create', Post::class);
 
         return Inertia::render('posts/edit', [
             'postData' => Post::findOrFail($id, ['id', 'category_id', 'image_path', 'content', 'title', 'published']),

@@ -1,8 +1,13 @@
 import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
 
-export interface Auth {
+export interface SharedAuth {
     user: User;
+}
+
+export interface SharedFlash {
+    success?: string | null;
+    error?: string | null;
 }
 
 export interface BreadcrumbItem {
@@ -22,10 +27,11 @@ export interface NavItem {
     isActive?: boolean;
 }
 
-export interface SharedData {
+export interface PageProps {
     name: string;
     quote: { message: string; author: string };
-    auth: Auth;
+    auth: SharedAuth;
+    flash: SharedFlash;
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
     [key: string]: unknown;
@@ -45,35 +51,35 @@ export interface User {
 }
 
 export interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  excerpt: string;
-  author: {
     id: string;
-    name: string;
-    avatar: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-  likes: number;
-  isLiked: boolean;
-  commentsCount: number;
-  readTime: number;
-  tags: string[];
+    title: string;
+    content: string;
+    excerpt: string;
+    author: {
+        id: string;
+        name: string;
+        avatar: string;
+    };
+    createdAt: string;
+    updatedAt: string;
+    likes: number;
+    isLiked: boolean;
+    commentsCount: number;
+    readTime: number;
+    tags: string[];
 }
 
 export interface Comment {
-  id: string;
-  content: string;
-  author: {
     id: string;
-    name: string;
-    avatar: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-  likes: number;
-  isLiked: boolean;
-  postId: string;
+    content: string;
+    author: {
+        id: string;
+        name: string;
+        avatar: string;
+    };
+    createdAt: string;
+    updatedAt: string;
+    likes: number;
+    isLiked: boolean;
+    postId: string;
 }

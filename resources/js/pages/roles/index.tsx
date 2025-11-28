@@ -4,8 +4,8 @@ import Search from '@/components/search';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Head, router, usePage } from '@inertiajs/react';
+import { PageProps, type BreadcrumbItem } from '@/types';
+import { Head, router } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { RoleColumn, columns } from './components/columns';
@@ -33,23 +33,11 @@ interface PaginatedData {
     links: Links[];
 }
 
-interface RolePageProps {
+interface RolePageProps extends PageProps {
     roles: PaginatedData;
 }
 
-interface PageProps {
-    flash: {
-        success?: string;
-        error?: string;
-    };
-    [key: string]: unknown;
-}
-
-export default function Index({ roles }: RolePageProps) {
-    const {
-        flash: { success },
-    } = usePage<PageProps>().props;
-
+export default function Index({ roles, flash: { success } }: RolePageProps) {
     const current = roles?.current_page;
     const last = roles?.last_page;
     const perPage = roles?.per_page ?? 10;

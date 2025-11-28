@@ -5,7 +5,7 @@ import Search from '@/components/search';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { PageProps, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import { CategoryColumn, columns } from './columns';
@@ -33,21 +33,13 @@ interface PaginatedData {
     links: Links[];
 }
 
-interface CategoriesPageProps {
+interface CategoriesPageProps extends PageProps {
     categories: PaginatedData;
 }
 
-interface PageProps {
-    flash: {
-        success?: string;
-        error?: string;
-    };
-    [key: string]: unknown;
-}
 
 export default function Index({ categories }: CategoriesPageProps) {
     const [isOpen, setIsOpen] = useState(false);
-    console.log("hi")
 
     const current = categories?.current_page;
     const last = categories?.last_page;

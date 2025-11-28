@@ -1,10 +1,10 @@
 import PageSize from '@/components/page-size';
-import PaginationComp from '@/components/pagination';
+import Pagination from '@/components/pagination';
 import Search from '@/components/search';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { PageProps, type BreadcrumbItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -33,23 +33,12 @@ interface PaginatedData {
     links: Links[];
 }
 
-interface RolePageProps {
+interface PermissionsProps extends PageProps{
     permissions: PaginatedData;
 }
 
-interface PageProps {
-    flash: {
-        success?: string;
-        error?: string;
-    };
-    [key: string]: unknown;
-}
 
-export default function Index({ permissions }: RolePageProps) {
-    const {
-        flash: { success },
-    } = usePage<PageProps>().props;
-
+export default function Index({ permissions,  flash: { success } }: PermissionsProps) {
     const current = permissions?.current_page;
     const last = permissions?.last_page;
     const perPage = permissions?.per_page ?? 10;
@@ -89,7 +78,7 @@ export default function Index({ permissions }: RolePageProps) {
                 {/* Page size */}
                 <PageSize perPage={perPage} />
 
-                <PaginationComp current={current} last={last} perPage={perPage} />
+                <Pagination current={current} last={last} perPage={perPage} />
             </div>
 
             {/* <PermissionModal isOpen={isOpen} onClose={onClose} /> */}

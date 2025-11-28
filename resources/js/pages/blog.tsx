@@ -2,7 +2,7 @@ import { BlogCard } from '@/components/block-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { mockPosts } from '@/data/mockup';
-import { type SharedData } from '@/types';
+import { type PageProps } from '@/types';
 import { BlogPost } from '@/types/index';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Clock, Heart, Search, TrendingUp } from 'lucide-react';
@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 export default function Blog({posts}:{ posts: any}) {
     console.log(posts)
-    const { auth } = usePage<SharedData>().props;
+    const { auth } = usePage<PageProps>().props;
     const [searchQuery, setSearchQuery] = useState('');
 
     const handleLike = (postId: string) => {

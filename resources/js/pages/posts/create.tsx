@@ -36,6 +36,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Create({ categories }: CreateProps) {
     const [tagInput, setTagInput] = useState('');
+    
     const { data, setData, post, processing, errors } = useForm<PostForm>({
         title: '',
         content: '',
