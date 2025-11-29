@@ -62,6 +62,7 @@ const ImageUpload = ({ onFilesChange, multiple = true, initialImages = [] }: Ima
         const files = event.target.files;
         if (!files) return;
 
+        //validate image
         const validFiles = Array.from(files).filter((file) => {
             if (!file.type.startsWith('image/')) {
                 toast.error('Please select only image files.');

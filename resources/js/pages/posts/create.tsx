@@ -70,7 +70,6 @@ export default function Create({ categories }: CreateProps) {
 
     function submit(e: React.FormEvent) {
         e.preventDefault();
-        console.log(data)
         post(route('posts.store'), {
             onError: () => {
                 toast.error('error occured');

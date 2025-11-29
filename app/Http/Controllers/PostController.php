@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostStoreRequest;
+use App\Http\Requests\PostUpdateRequest;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -55,16 +57,10 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PostStoreRequest $request)
     {
         $this->authorize('create', Post::class);
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120', // 5MB
-            'tags' => 'nullable|array',
-        ]);
+        $data = $request->validated();
 
         $readTime = ceil(str_word_count(strip_tags($data['content'])) / 200);
         $path = null;
@@ -76,8 +72,7 @@ class PostController extends Controller
         }
 
         Post::create(attributes: [
-            'title' => $data['title'],
-            'content' => $data['content'],
+            ...$data,
             'category_id' => (int) $data['category_id'],
             'user_id' => auth()->id(),
             'image_path' => $path,
@@ -116,18 +111,12 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(PostUpdateRequest $request, $id)
     {
         $post = Post::findOrFail($id);
 
         $this->authorize('update', $post);
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'published' => 'nullable|string',
-            'content' => 'required|string',
-            'category_id' => 'required|string|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120', // 5MB
-        ]);
+        $data = $request->validated();
 
         // Handle new uploaded image
         if ($request->hasFile('image')) {
